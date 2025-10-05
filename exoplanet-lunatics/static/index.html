@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunatics – NASA Space Apps</title>
+    <script src="https://cdn.tailwindcss.com "></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com ">
+    <link rel="preconnect" href="https://fonts.gstatic.com " crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300 ;400;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root{ --space-blue:#0b0f1a; --violet:#8e2de2; --indigo:#4a00e0;}
+        body{font-family:'Inter',sans-serif; background:var(--space-blue); color:#e5e7eb; scroll-padding-top:88px;}
+        .font-brand{font-family:'Space Grotesk',sans-serif; letter-spacing:.02em;}
+        .glass-effect{background:rgba(11,15,26,.65); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.08);}
+        .primary-btn{background:linear-gradient(90deg,var(--violet),var(--indigo)); transition:all .3s ease; box-shadow:0 4px 15px rgba(142,45,226,.3);}
+        .primary-btn:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(142,45,226,.5);}
+        .section-heading{border-bottom:2px solid var(--violet); padding-bottom:.5rem; display:inline-block;}
+
+        /* ----------  star-field  ---------- */
+        .starry-background{position:fixed; inset:0; z-index:-1; overflow:hidden;}
+        .stars,.twinkling{position:absolute; inset:0; width:100%; height:100%;}
+        .stars{background:var(--space-blue) url(https://www.transparenttextures.com/patterns/stardust.png ) repeat top center; z-index:0;}
+        .twinkling{background:transparent url(https://www.transparenttextures.com/patterns/stardust.png ) repeat top center; z-index:1; animation:move-twink-back 200s linear infinite;}
+        @keyframes move-twink-back{from{background-position:0 0;} to{background-position:-10000px 5000px;}}
+        @media (prefers-reduced-motion:reduce){.twinkling{animation:none;}}
+
+        /* ----------  NASA-grade meteors  ---------- */
+        .meteor-trail{position:fixed; inset:0; pointer-events:none; z-index:2;}
+        .meteor{
+            position:absolute;
+            top:var(--y);
+            left:var(--x);
+            width:2px;                     /* pinpoint head */
+            height:2px;
+            border-radius:50%;
+            background:#ffffff;
+            box-shadow:0 0 0 0 #ffffff,    /* fade-in */
+                     -120px 0 20px -5px rgba(255,255,255,.6),
+                     -240px 0 40px -10px rgba(255,255,255,.2); /* dim tail */
+            animation:meteor-fly var(--duration) linear infinite;
+            animation-delay:var(--delay);
+            will-change:transform;
+            opacity:0;
+        }
+        @keyframes meteor-fly{
+            0%   {transform:translateX(0)        rotate(var(--angle)); opacity:0;}
+            10%  {opacity:1;}
+            90%  {opacity:1;}
+            100% {transform:translateX(110vw) rotate(var(--angle)); opacity:0;}
+        }
+        /* focus ring */
+        a:focus,button:focus,input:focus,textarea:focus{outline:2px solid var(--violet); outline-offset:2px;}
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- STAR-FIELD + METEORS -->
+<div class="starry-background" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+</div>
+<div class="meteor-trail" aria-hidden="true" id="meteorContainer"></div>
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 z-10 glass-effect">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#" class="flex items-center space-x-2">
+            <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg ">
+                <path d="M50 95C33.4315 95 20 81.5685 20 65C20 48.4315 33.4315 35 50 35C52.7614 35 55 32.7614 55 30C55 13.4315 41.5685 0 25 0C11.1929 0 0 11.1929 0 25C0 38.8071 11.1929 50 25 50C27.7614 50 30 52.2386 30 55C30 71.5685 43.4315 85 60 85C76.5685 85 90 71.5685 90 55C90 38.4315 76.5685 25 60 25C57.2386 25 55 22.7614 55 20C55 8.9543 46.0457 0 35 0C32.2386 0 30 2.23858 30 5C30 7.76142 32.2386 10 35 10C40.5228 10 45 14.4772 45 20C45 25.5228 40.5228 30 35 30C32.2386 30 30 32.2386 30 35C30 46.0457 38.9543 55 50 55C61.0457 55 70 46.0457 70 35C70 23.9543 61.0457 15 50 15C47.2386 15 45 12.7614 45 10C45 4.47715 40.5228 0 35 0C15.669 0 0 15.669 0 35C0 54.331 15.669 70 35 70C37.7614 70 40 67.7614 40 65C40 62.2386 37.7614 60 35 60C21.1929 60 10 48.8071 10 35C10 21.1929 21.1929 10 35 10C48.8071 10 60 21.1929 60 35C60 48.8071 48.8071 60 35 60C32.2386 60 30 62.2386 30 65C30 81.5685 43.4315 95 60 95C79.331 95 95 79.331 95 60C95 40.669 79.331 25 60 25C57.2386 25 55 22.7614 55 20C55 8.9543 46.0457 0 35 0"
+                  stroke="url(#paint0_linear)" stroke-width="5"/>
+                <defs>
+                    <linearGradient id="paint0_linear" x1="0" y1="47.5" x2="95" y2="47.5" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#8E2DE2"/>
+                        <stop offset="1" stop-color="#4A00E0"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="font-brand text-3xl font-bold text-white">lunatics</span>
+        </a>
+        <nav class="hidden md:flex items-center space-x-8">
+            <a href="#about" class="text-gray-300 hover:text-white transition">About</a>
+            <a href="#services" class="text-gray-300 hover:text-white transition">Services</a>
+            <a href="/app" class="text-gray-300 hover:text-white transition">Exoplanet Hunter</a>
+        </nav>
+        <button class="md:hidden text-white" aria-label="Open navigation">
+            <svg xmlns="http://www.w3.org/2000/svg " class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+            </svg>
+        </button>
+    </div>
+</header>
+
+<main>
+    <!-- HERO -->
+    <section class="min-h-screen flex items-center justify-center text-center pt-20">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-center items-center mb-6">
+                <svg class="w-24 h-24 sm:w-32 sm:h-32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg ">
+                    <use href="#logoPath"/>
+                </svg>
+            </div>
+            <h1 class="font-brand text-5xl md:text-7xl font-bold text-white mb-4">lunatics</h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">Creativity unbound. Ideas that are simply out of this world.</p>
+            <a href="/app" class="primary-btn text-white font-bold py-3 px-8 rounded-full text-lg">
+    Try the AI Exoplanet Hunter
+</a>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="font-brand text-4xl font-bold text-center mb-12 section-heading">Who We Are</h2>
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 text-center md:text-left">
+                    <p class="text-lg mb-4">We are the dreamers, the innovators, the ones who look at the moon and see possibility. Lunatics is a collective of creative minds dedicated to pushing boundaries and exploring new frontiers in design, technology, and art.</p>
+                    <p class="text-lg">Our philosophy is simple: don't be afraid to be different. We thrive on chaos, find beauty in the abstract, and believe the best ideas are born on the edge of madness.</p>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="glass-effect rounded-2xl p-8">
+                        <img src="https://placehold.co/600x400/0b0f1a/8e2de2?text=Cosmic+Vision " alt="Abstract cosmic art" class="rounded-lg shadow-2xl w-full">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="font-brand text-4xl font-bold text-center mb-12 section-heading">Our Playground</h2>
+            <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 list-none p-0 m-0">
+                <li class="glass-effect p-8 rounded-2xl text-center hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
+                    <h3 class="font-brand text-2xl font-bold mb-4">Brand Identity</h3>
+                    <p>Crafting logos and visual systems that are as unique as a fingerprint on a distant star.</p>
+                </li>
+                <li class="glass-effect p-8 rounded-2xl text-center hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
+                    <h3 class="font-brand text-2xl font-bold mb-4">Digital Experiences</h3>
+                    <p>Building websites and applications that are intuitive, beautiful, and defy gravity.</p>
+                </li>
+                <li class="glass-effect p-8 rounded-2xl text-center hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
+                    <h3 class="font-brand text-2xl font-bold mb-4">Creative Content</h3>
+                    <p>Producing visuals and narratives that capture attention and launch imaginations.</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="py-20">
+        <div class="container mx-auto px-6 max-w-3xl text-center">
+            <h2 class="font-brand text-4xl font-bold text-center mb-6 section-heading">Ready to Launch?</h2>
+            <p class="text-lg mb-8">Have a crazy idea? We'd love to hear it. Reach out and let's make something amazing together.</p>
+            <form class="space-y-6" onsubmit="event.preventDefault()">
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <input type="text" placeholder="Your Name" required class="w-full bg-gray-900/50 border border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+                    <input type="email" placeholder="Your Email" required class="w-full bg-gray-900/50 border border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+                </div>
+                <textarea placeholder="Your Message" rows="5" required class="w-full bg-gray-900/50 border border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"></textarea>
+                <button type="submit" class="primary-btn text-white font-bold py-3 px-12 rounded-full text-lg">Send Transmission</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="glass-effect py-8">
+    <div class="container mx-auto px-6 text-center text-gray-400">
+        <p>&copy; 2025 Lunatics. All Rights Reserved. Don't be sane.</p>
+    </div>
+</footer>
+
+<!-- SVG sprite -->
+<svg style="display:none;" xmlns="http://www.w3.org/2000/svg ">
+    <symbol id="logoPath" viewBox="0 0 100 100" fill="none">
+        <path d="M50 95C33.4315 95 20 81.5685 20 65C20 48.4315 33.4315 35 50 35C52.7614 35 55 32.7614 55 30C55 13.4315 41.5685 0 25 0C11.1929 0 0 11.1929 0 25C0 38.8071 11.1929 50 25 50C27.7614 50 30 52.2386 30 55C30 71.5685 43.4315 85 60 85C76.5685 85 90 71.5685 90 55C90 38.4315 76.5685 25 60 25C57.2386 25 55 22.7614 55 20C55 8.9543 46.0457 0 35 0C32.2386 0 30 2.23858 30 5C30 7.76142 32.2386 10 35 10C40.5228 10 45 14.4772 45 20C45 25.5228 40.5228 30 35 30C32.2386 30 30 32.2386 30 35C30 46.0457 38.9543 55 50 55C61.0457 55 70 46.0457 70 35C70 23.9543 61.0457 15 50 15C47.2386 15 45 12.7614 45 10C45 4.47715 40.5228 0 35 0C15.669 0 0 15.669 0 35C0 54.331 15.669 70 35 70C37.7614 70 40 67.7614 40 65C40 62.2386 37.7614 60 35 60C21.1929 60 10 48.8071 10 35C10 21.1929 21.1929 10 35 10C48.8071 10 60 21.1929 60 35C60 48.8071 48.8071 60 35 60C32.2386 60 30 62.2386 30 65C30 81.5685 43.4315 95 60 95C79.331 95 95 79.331 95 60C95 40.669 79.331 25 60 25C57.2386 25 55 22.7614 55 20C55 8.9543 46.0457 0 35 0"
+                  stroke="url(#paint0_linear)" stroke-width="5"/>
+        <defs>
+            <linearGradient id="paint0_linear" x1="0" y1="47.5" x2="95" y2="47.5" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#8E2DE2"/>
+                <stop offset="1" stop-color="#4A00E0"/>
+            </linearGradient>
+        </defs>
+    </symbol>
+</svg>
+
+<script>
+/* ----------  NASA-grade meteor generator  ---------- */
+(function(){
+    const container=document.getElementById('meteorContainer');
+    const createMeteor=()=>{
+        const m=document.createElement('span');
+        m.className='meteor';
+        m.style.setProperty('--x',`${-10-Math.random()*20}%`);
+        m.style.setProperty('--y',`${Math.random()*90}%`);
+        m.style.setProperty('--angle',`${-35+Math.random()*20}deg`);
+        m.style.setProperty('--duration',`${1.2+Math.random()*.6}s`);
+        container.appendChild(m);
+        setTimeout(()=>m.remove(),3000);
+    };
+    const loop=()=>{ createMeteor(); createMeteor(); };          /* two at once */
+    loop();                                                      /* immediate */
+    setInterval(loop,5000+Math.random()*2000);                 /* 5–7 s random */
+})();
+</script>
+
+</body>
+</html>
